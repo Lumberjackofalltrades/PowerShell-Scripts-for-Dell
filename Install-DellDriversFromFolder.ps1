@@ -5,6 +5,9 @@
 .DESCRIPTION 
     Download the individual drivers from dell.com/support for a particular platform to use for offline install.  Installs drivers one at a time.
 
+.NOTES 
+    Created with Bing Copilot
+
 .LINK 
     https://www.dell.com/support/home/en-us
   
