@@ -1,10 +1,11 @@
-<# 
+<#
 .SYNOPSIS
-    Installs Dell drivers from from folders based on model number
+    Installs Dell drivers from an SMB file share based on the computer's model number.
 
 .DESCRIPTION 
-    Installs Dell drivers for individual platforms based on model number.  Create a folder for each platform based on the results of "Get-WmiObject Win32_ComputerSystem | Select-Object -ExpandProperty Model"
- 
+    This script installs Dell drivers for individual platforms based on the model number.
+    Create a folder for each platform on the SMB file share, named after the model number.
+
 .NOTES 
     Created with Bing Copilot
 
@@ -15,10 +16,16 @@
 # Get the computer's model number
 $model = Get-WmiObject Win32_ComputerSystem | Select-Object -ExpandProperty Model
 
-# Define the path to the driver folder
-$driverFolder = "C:\Drivers\$model"
+# Define the UNC path to the driver folder on the SMB share
+$driverFolder = "\\server\share\Drivers\$model"
 
-# Install drivers silently
-Get-ChildItem -Path $driverFolder -Filter "*.exe" | ForEach-Object {
-    Start-Process -FilePath $_.FullName -ArgumentList "/s" -Wait
+# Check if the driver folder exists
+if (Test-Path $driverFolder) {
+    # Install drivers silently
+    Get-ChildItem -Path $driverFolder -Filter "*.exe" | ForEach-Object {
+        Start-Process -FilePath $_.FullName -ArgumentList "/s" -Wait
+    }
+}
+else {
+    Write-Host "Driver folder for model '$model' not found. Please ensure the correct folder structure."
 }
