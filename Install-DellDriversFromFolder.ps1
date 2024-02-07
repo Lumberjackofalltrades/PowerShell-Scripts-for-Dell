@@ -16,7 +16,22 @@
 # Define the path to the driver folder
 $driverFolder = "C:\Drivers"
 
+# Import the required module
+Import-Module Microsoft.PowerShell.Management
+
 # Install drivers silently
-Get-ChildItem -Path $driverFolder -Filter "*.exe" | ForEach-Object {
-    Start-Process -FilePath $_.FullName -ArgumentList "/s" -Wait
+try {
+    Get-ChildItem -Path $driverFolder -Filter "*.exe" | ForEach-Object {
+        Start-Process -FilePath $_.FullName -ArgumentList "/s" -Wait
+    }
 }
+catch {
+    Write-Host "An error occurred while installing drivers: $_"
+}
+
+# Check if the driver folder exists
+if (-not (Test-Path $driverFolder)) {
+    Write-Host "Driver folder not found: $driverFolder"
+    return
+}
+
